@@ -9,18 +9,39 @@ from models import ServicoPosVenda
 app = FastAPI()
 ARQUIVO_RETORNO = "planilha_confirmada.xlsx"
 
+ESTILO_CSS = """
+<style>
+    :root { --primaria: #800080; --secundaria: #ff69b4; --fundo: #f8f9fa; --whatsapp: #25D366; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: var(--fundo); margin: 0; padding: 0; }
+    .header { background: linear-gradient(135deg, var(--primaria), var(--secundaria)); color: white; padding: 40px 20px; text-align: center; }
+    .container { max-width: 800px; margin: -30px auto 50px; padding: 20px; }
+    .cliente-card { 
+        background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; 
+        display: flex; justify-content: space-between; align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid var(--primaria);
+    }
+    .btn-whats { 
+        background-color: var(--whatsapp); color: white; padding: 12px 25px; 
+        text-decoration: none; border-radius: 30px; font-weight: bold;
+    }
+    .btn-whats:visited { background-color: #6c757d !important; }
+    .btn-baixar { display: inline-block; background: var(--primaria); color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 20px; }
+</style>
+"""
+
 @app.get("/", response_class=HTMLResponse)
 async def principal():
-    return """
+    return f"""
     <html>
-        <body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
-            <h2>Bot de Pós-Venda My Acessórios 🌸</h2>
-            <form action="/gerar-links" enctype="multipart/form-data" method="post">
-                <input name="file" type="file" accept=".xlsx" required><br><br>
-                <button type="submit" style="background: #800080; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                    GERAR LISTA DE ENVIOS
-                </button>
-            </form>
+        <head><title>My Acessórios</title>{ESTILO_CSS}</head>
+        <body>
+            <div class="header"><h1>My Acessórios 🌸</h1><p>Sistema de Pós-Venda</p></div>
+            <div class="container" style="text-align:center; background:white; padding:30px; border-radius:15px;">
+                <form action="/gerar-links" enctype="multipart/form-data" method="post">
+                    <input name="file" type="file" accept=".xlsx" required><br><br>
+                    <button type="submit" style="background:var(--primaria); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer;">GERAR LISTA</button>
+                </form>
+            </div>
         </body>
     </html>
     """
@@ -35,72 +56,36 @@ async def gerar_links(file: UploadFile = File(...)):
     ws = wb.active
     roxo_fill = PatternFill(start_color="800080", end_color="800080", fill_type="solid")
 
-    # CSS Adicionado para marcar os clicados
-    html_links = """
-    <html>
-        <head>
-            <style>
-                .btn-whats {
-                    display: inline-block; 
-                    margin-top: 5px; 
-                    color: white; 
-                    background: #25D366; 
-                    padding: 8px 15px; 
-                    text-decoration: none; 
-                    border-radius: 4px; 
-                    font-weight: bold;
-                }
-                /* QUANDO O LINK FOR CLICADO, MUDA A COR */
-                .btn-whats:visited {
-                    background: #555 !important;
-                    color: #ccc !important;
-                }
-                .btn-whats:visited::after {
-                    content: " (ENVIADO ✅)";
-                    font-size: 0.8em;
-                }
-            </style>
-        </head>
-        <body style="font-family: sans-serif; padding: 20px;">
-            <div style="background: #eee; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-                <strong>Dica:</strong> O botão ficará <b>cinza</b> após você clicar, para você saber quem já chamou.
-            </div>
-            <h2>Próximos Envios:</h2>
-            <ul style="list-style: none; padding: 0;">
-    """
+    html_links = f"<html><head>{ESTILO_CSS}</head><body><div class='header'><h1>Lista de Envios 📲</h1></div><div class='container'><div style='text-align:center'><a href='/baixar-planilha' class='btn-baixar'>📥 Baixar Planilha Marcada</a></div>"
 
     for index, linha in df.iterrows():
         try:
-            servico = ServicoPosVenda(
-                vendedora=linha['vendedora'],
-                cliente=linha['cliente'],
-                ddd=linha['ddd'],
-                telefone=linha['telefone']
-            )
+            # Pegando os dados (vendedora e cliente agora batem com o models.py)
+            vendedora = str(linha.get('vendedora', 'Equipe')).strip()
+            cliente = str(linha.get('cliente', 'Cliente')).strip()
+            ddd = str(linha.get('ddd', '83')).replace(".0", "").strip()
+            telefone = str(linha.get('telefone', '')).replace(".0", "").strip()
+
+            if vendedora.lower() in ['nan', '', 'vendedora']: continue
+
+            servico = ServicoPosVenda(vendedora=vendedora, cliente=cliente, ddd=ddd, telefone=telefone)
             link = servico.gerar_link_whatsapp()
             
             html_links += f"""
-                <li style="margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
-                    <span style="font-size: 1.1em;">👤 {servico.nome_contato}</span><br>
-                    <a href="{link}" target="_self" class="btn-whats">
-                        ENVIAR WHATSAPP
-                    </a>
-                </li>
+                <div class="cliente-card">
+                    <div>
+                        <strong style="font-size: 1.1em;">👤 {servico.cliente.title()}</strong><br>
+                        <small style="color: #888;">Atendente: {servico.vendedora.title()}</small>
+                    </div>
+                    <a href="{link}" target="_blank" class="btn-whats">ENVIAR WHATSAPP</a>
+                </div>
             """
             ws.cell(row=index + 2, column=7).fill = roxo_fill
         except Exception as e:
             print(f"Erro na linha {index}: {e}")
 
     wb.save(ARQUIVO_RETORNO)
-    html_links += """
-            </ul>
-            <br><hr>
-            <a href="/baixar-planilha" style="color: #800080; font-weight: bold;">📥 Baixar Planilha Marcada</a>
-            <br><br>
-            <a href="/">⬅ Voltar para Início</a>
-        </body>
-    </html>
-    """
+    html_links += "</div></body></html>"
     return html_links
 
 @app.get("/baixar-planilha")
