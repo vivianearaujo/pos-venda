@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Envios - My Acessórios</title>
+    <style>
+        :root { --primaria: #800080; --cinza: #d1d1d1; }
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        th { background: var(--primaria); color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        
+        /* Classe que será aplicada ao clicar */
+        .enviado { background-color: var(--cinza) !important; color: #777; }
+        .enviado a { color: #777; pointer-events: none; text-decoration: none; }
+        
+        .btn-link { color: var(--primaria); font-weight: bold; text-decoration: none; }
+        .btn-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h2>📲 Fila de Atendimento - Pós-Venda</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Cidade</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in lista_clientes %}
+            <tr id="linha-{{ loop.index }}">
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.cidade }}</td>
+                <td>
+                    <a href="{{ cliente.link_zap }}" 
+                       target="zap_janela" 
+                       class="btn-link" 
+                       onclick="marcarComoLido('linha-{{ loop.index }}')">
+                       Abrir WhatsApp
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function marcarComoLido(idLinha) {
+            document.getElementById(idLinha).classList.add('enviado');
+        }
+    </script>
+
+</body>
+</html>
