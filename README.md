@@ -1,23 +1,23 @@
-# 🌸 Bot de Pós-Venda - My Acessórios
+# 🌸 My Acessórios - Sistema de Pós-Venda
 
-Este projeto é uma ferramenta de automação para facilitar o contato de pós-venda com clientes. Ele lê uma planilha de vendas, gera links personalizados de WhatsApp e organiza o fluxo de atendimento de forma visual e rápida.
+Sistema desenvolvido para automatizar e organizar o contato de pós-venda com clientes da loja **My Acessórios**. O sistema lê uma planilha de vendas, gera links personalizados de WhatsApp e organiza o fluxo de atendimento.
 
 ## 🚀 Funcionalidades
-
-* **Leitura de Excel:** Processa automaticamente planilhas com dados de vendas.
-* **Links Diretos:** Gera links de WhatsApp com mensagens pré-definidas e cupons de desconto.
-* **Marcação Visual:** O sistema pinta a planilha original e muda a cor dos botões já clicados para evitar duplicidade.
-* **Interface Web:** Interface simples e intuitiva desenvolvida com FastAPI.
+* **Leitura de Planilha:** Processa arquivos `.xlsx` capturando dados de clientes, vendedoras e compras.
+* **Mensagens Personalizadas:** Gera automaticamente saudações usando apenas o primeiro nome da cliente e assinatura fixa da **Viviane**.
+* **Gestão de Cliques:** Marcador visual que esmaece a linha da tabela após o clique, evitando envios duplicados.
+* **Interface Limpa:** Abertura do WhatsApp sempre na mesma aba (`target="zap_janela"`) para evitar poluição no navegador.
 
 ## 🛠️ Tecnologias Utilizadas
+* **Python 3.12**
+* **FastAPI:** Framework web de alta performance.
+* **Pandas & OpenPyXL:** Manipulação e leitura de dados de planilhas.
+* **Jinja2:** Motor de templates para o frontend HTML/CSS.
+* **Uvicorn:** Servidor ASGI para rodar a aplicação.
 
-* **Python 3.10+**
-* **FastAPI:** Framework para a criação da API e interface web.
-* **Pandas:** Para manipulação de dados da planilha.
-* **Openpyxl:** Para edição e estilização do arquivo Excel.
-
-## 📋 Como usar (Passo a Passo)
-
-1. **Subir o servidor:**
+## 📋 Como rodar o projeto
+1. Clone o repositório.
+2. Crie um ambiente virtual: `python -m venv venv`.
+3. Instale as dependências: 
    ```bash
-   uvicorn main:app --reload
+   pip install fastapi uvicorn pandas openpyxl jinja2 python-multipart
