@@ -1,8 +1,9 @@
 ## 📸 Demonstração do Sistema (Pós-Venda)
 
 <p align="center">
-  <img src="lista.PNG" height="350px" alt="Lista de Clientes" />
   <img src="pos-venda.PNG" height="350px" alt="Sistema de Pós-Venda" />
+  <img src="lista.PNG" height="350px" alt="Lista de Clientes" />
+  
 </p>
 
 
