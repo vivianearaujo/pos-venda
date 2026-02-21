@@ -1,3 +1,11 @@
+## 📸 Demonstração do Sistema (Pós-Venda)
+
+<p align="center">
+  <img src="lista.PNG" height="350px" alt="Lista de Clientes" />
+  <img src="pos-venda.PNG" height="350px" alt="Sistema de Pós-Venda" />
+</p>
+
+
 # 🌸 My Acessórios - Sistema de Pós-Venda
 
 Sistema desenvolvido para automatizar e organizar o contato de pós-venda com clientes da loja **My Acessórios**. O sistema lê uma planilha de vendas, gera links personalizados de WhatsApp e organiza o fluxo de atendimento.
