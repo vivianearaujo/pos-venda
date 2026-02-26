@@ -28,5 +28,7 @@ Pandas & OpenPyXL: Manipulação e leitura de dados de planilhas.
 PyInstaller: Utilizado para converter o script num executável (.exe) de arquivo único.
 
 📋 Como gerar o Executável (.exe)
+
 Para gerar a versão final do sistema com o ícone de fundo preto da My Acessórios, utilize o seguinte comando no terminal:
+
 pyinstaller --onefile --noconsole --clean --icon="Logo_Preto.ico" --name "My_PosVenda_Oficial" main.py
